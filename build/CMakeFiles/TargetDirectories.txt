@@ -1,0 +1,4 @@
+/home/barkinkaradeniz/CLionProjects/Block2/build/CMakeFiles/rebuild_cache.dir
+/home/barkinkaradeniz/CLionProjects/Block2/build/CMakeFiles/edit_cache.dir
+/home/barkinkaradeniz/CLionProjects/Block2/build/CMakeFiles/server.dir
+/home/barkinkaradeniz/CLionProjects/Block2/build/CMakeFiles/client.dir

@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/barkinkaradeniz/CLionProjects/Block2/server.c
+stdio.h
+-
+sys/types.h
+-
+sys/socket.h
+-
+string.h
+-
+stdlib.h
+-
+netdb.h
+-
+stdbool.h
+-
+unistd.h
+-
+
