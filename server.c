@@ -6,9 +6,11 @@
 #include <netdb.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include<time.h>
 
-#define MAXCHAR 512
+#define MAXCHAR 5120
 #define BACKLOG 10
+size_t howLong = 0;
 
 struct theText {
     char *line;
@@ -18,7 +20,8 @@ struct theText {
 
 char *getText(char* filename){
 
-    static char line[MAXCHAR];
+    char *line = (char *)malloc(MAXCHAR * sizeof(char));
+    size_t len1 = MAXCHAR;
     int counter = 0;
 
     FILE *fp = fopen(filename , "r");
@@ -40,8 +43,11 @@ char *getText(char* filename){
         perror("Error opening the file");
         return (-1);
     }
-    for (int i = 0; i < (rand() % counter); i++) {
-        fgets(line, MAXCHAR, fp2);
+
+
+    srand(time(0));
+    for (int i = 0; i < rand() % counter; i++) {
+        howLong = getline(&line, &len1, fp2);
     }
     fclose(fp2);
 
@@ -53,31 +59,44 @@ int main(int argc, char *argv[] ){
 
     struct addrinfo hints, *servinfo;
     struct sockaddr_storage their_addr;
-    char *msg = getText(argv[1]);
     int sock_fd, new_fd;
     int len, bytes_sent;
+    int rv;
+    char *msg = getText(argv[2]);
 
     socklen_t addr_size;
-    len = strlen(msg);
 
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
 
-    getaddrinfo(NULL, argv[2], &hints, &servinfo);
+    if ((rv = getaddrinfo(NULL, argv[1], &hints, &servinfo)) != 0) {
+        fprintf(stderr,"getaddrinfo: %s\n", gai_strerror(rv));
+        return 1;
+    }
     sock_fd = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
-    bind(sock_fd, servinfo->ai_addr, servinfo->ai_addrlen);
-    listen(sock_fd, BACKLOG);
+    if (-1 == bind(sock_fd, servinfo->ai_addr, servinfo->ai_addrlen)) {
+        close(sock_fd);
+        perror("server : bind");
+    }
+    if (servinfo == NULL) {
+        fprintf(stderr, "server: failed to bind\n");
+        exit(1);
+    }
+
+    if(listen(sock_fd, BACKLOG) == -1) {
+        perror("listen");
+        exit(1);
+    }
 
     addr_size = sizeof(their_addr);
     new_fd = accept(sock_fd, (struct sockaddr *)&their_addr, &addr_size);
 
-    for (int i = 0; i < len; i++) {
+    for (int i = 0; i < ((int)howLong); i++) {
+
         bytes_sent = send(new_fd, &msg[i], 1, 0);
-        if (bytes_sent == 0) {
-            perror("Byte failed to send.");
-        }
+
     }
 
     close(new_fd);

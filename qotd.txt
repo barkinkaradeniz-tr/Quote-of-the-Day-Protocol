@@ -1,3 +1,4 @@
+This quote contains a \0 byte.
 It is not in the stars to hold our destiny but in ourselves.|William Shakespeare
 Good artists copy, great artists steal.|Pablo Picasso
 The time is always right to do what is right.|Martin Luther King

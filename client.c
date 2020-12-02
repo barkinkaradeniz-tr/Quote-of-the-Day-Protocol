@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
     struct addrinfo hints, *res;
     int sockfd;
     int stillConnected;
-    char *buf = calloc(1024 , sizeof(char));
+    char *buf = calloc(8192,sizeof(char));
     char data;
 
     memset(&hints, 0, sizeof hints);
@@ -55,7 +55,9 @@ int main(int argc, char *argv[]) {
 
     }
 
-    printf("%s", buf);
+    for (int j = 0; j < i; j++) {
+        printf("%c", buf[j]);
+    }
 
     close(sockfd);
     free(buf);
